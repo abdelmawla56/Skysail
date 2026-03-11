@@ -27,19 +27,26 @@ const connectDB = async () => {
 connectDB();
 
 // Basic route for testing
-app.get('/', (req, res) => {
-    res.send('API is running...');
-});
-
-// Import routes
-const authRoutes = require('./routes/authRoutes');
-const flightRoutes = require('./routes/flightRoutes');
-const bookingRoutes = require('./routes/bookingRoutes');
+const path = require('path');
 
 // Use routes
 app.use('/api/auth', authRoutes);
 app.use('/api/flights', flightRoutes);
 app.use('/api/bookings', bookingRoutes);
+
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production') {
+    const frontendDist = path.join(__dirname, '../frontend/dist');
+    app.use(express.static(frontendDist));
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(frontendDist, 'index.html'));
+    });
+} else {
+    app.get('/', (req, res) => {
+        res.send('API is running...');
+    });
+}
 
 // Error handling middleware
 app.use((err, req, res, next) => {
