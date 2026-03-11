@@ -16,21 +16,25 @@ Follow these steps to move your application from localhost to the web.
     - `MAIL_HOST`, `MAIL_USER`, etc.
     - `PORT`: `10000` (Render will set this automatically, but good to have)
 
-## 2. Prepare the Frontend (Vercel/Netlify)
+## 2. Prepare the Frontend (Netlify - RECOMMENDED)
 
 ### Step A: Configure API URL
 I have updated `frontend/src/services/api.js` to use an environment variable. When deploying the frontend:
-1.  **Vercel Settings**: Add an Environment Variable named `VITE_API_URL`.
-2.  **Value**: Set this to your **Render Backend URL** (e.g., `https://skysail-backend.onrender.com/api`).
+1.  **Netlify Settings**: Go to **Site Settings** > **Environment variables**.
+2.  **Add Variable**: Name it `VITE_API_URL`.
+3.  **Value**: Set this to your **Render Backend URL** (e.g., `https://skysail-backend.onrender.com/api`).
 
-### Step B: Deploy to Vercel
-1.  Go to [Vercel](https://vercel.com/) and import your GitHub repo.
-2.  **Configure Settings**:
-    - **Framework Preset**: `Vite`
-    - **Root Directory**: `frontend`
-    - **Build Command**: `npm run build`
-    - **Output Directory**: `dist`
-3.  **Deploy**: Hit deploy!
+### Step B: Deploy to Netlify
+1.  Go to [Netlify](https://app.netlify.com/) and click **"Add new site"** > **"Import an existing project"**.
+2.  Connect to GitHub and select `Skysail`.
+3.  **Configure Settings**:
+    - **Base directory**: `frontend`
+    - **Build command**: `npm run build`
+    - **Publish directory**: `dist`
+4.  **Deploy**: Netlify will automatically use the `netlify.toml` I created to handle everything else!
+
+## 3. Alternative: Prepare the Frontend (Vercel)
+... (keep existing Vercel instructions below)
 
 ## 3. Configure MongoDB Atlas (CRITICAL)
 
