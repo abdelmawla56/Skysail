@@ -2,7 +2,7 @@ node_modules
 .env
 dist
 .DS_Store
-package-lock.json
+# package-lock.json removed from ignore for deployment consistency
 frontend/node_modules
 frontend/dist
 backend/node_modules
