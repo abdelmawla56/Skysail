@@ -27,6 +27,7 @@ const connectDB = async () => {
 connectDB();
 
 // Basic route for testing
+// Basic route for testing
 const path = require('path');
 
 // Use routes
@@ -34,32 +35,14 @@ app.use('/api/auth', authRoutes);
 app.use('/api/flights', flightRoutes);
 app.use('/api/bookings', bookingRoutes);
 
-// Serve static assets in production
-if (process.env.NODE_ENV === 'production') {
-    const frontendDist = path.join(__dirname, '../frontend/dist');
-    app.use(express.static(frontendDist));
+// Export app for serverless
+module.exports = app;
 
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(frontendDist, 'index.html'));
-    });
-} else {
-    app.get('/', (req, res) => {
-        res.send('API is running...');
+// Local server listener
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
     });
 }
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error('Server Error:', err);
-    const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-    res.status(statusCode).json({
-        message: err.message,
-        stack: process.env.NODE_ENV === 'production' ? null : err.stack,
-    });
-});
-
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
