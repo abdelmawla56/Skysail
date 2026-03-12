@@ -12,15 +12,30 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Database connection
+// Import routes
+const authRoutes = require('./routes/authRoutes');
+const flightRoutes = require('./routes/flightRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
+
+// Helper to apply routes with and without /api prefix
+const applyRoutes = (prefix) => {
+    app.use(`${prefix}/auth`, authRoutes);
+    app.use(`${prefix}/flights`, flightRoutes);
+    app.use(`${prefix}/bookings`, bookingRoutes);
+};
+
+// Handle both Netlify (/flights) and Local/Traditional (/api/flights)
+applyRoutes('/api');
+applyRoutes(''); // Fallback for serverless where /api might be stripped
+
 const connectDB = async () => {
+    if (mongoose.connection.readyState >= 1) return;
     try {
         console.log('Connecting to MongoDB...');
-        const conn = await mongoose.connect(process.env.MONGODB_URI);
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
+        await mongoose.connect(process.env.MONGODB_URI);
+        console.log('MongoDB Connected');
     } catch (error) {
         console.error(`MongoDB Connection Error: ${error.message}`);
-        process.exit(1);
     }
 };
 
@@ -29,11 +44,6 @@ connectDB();
 // Basic route for testing
 // Basic route for testing
 const path = require('path');
-
-// Use routes
-app.use('/api/auth', authRoutes);
-app.use('/api/flights', flightRoutes);
-app.use('/api/bookings', bookingRoutes);
 
 // Export app for serverless
 module.exports = app;

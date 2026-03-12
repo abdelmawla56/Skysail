@@ -142,7 +142,7 @@ const Home = () => {
                     <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', padding: '4rem' }}>
                         <div className="loading-spinner" style={{ width: '3rem', height: '3rem' }}></div>
                     </div>
-                ) : flights.length > 0 ? (
+                ) : (Array.isArray(flights) && flights.length > 0) ? (
                     flights.map((flight) => (
                         <div key={flight._id} className="glass fade-in" style={{ padding: '1.5rem', transition: 'transform 0.3s' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', alignItems: 'center' }}>
