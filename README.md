@@ -2,7 +2,7 @@
 
 A full-stack flight booking application built with Node.js, Express, MongoDB, and React. Featuring secure JWT authentication, email verification via Mailtrap, and a premium glassmorphism design.
 
-## 🚀 Features
+##  Features
 
 - **Authentication System**:
   - Secure registration and login using JWT.
@@ -21,13 +21,13 @@ A full-stack flight booking application built with Node.js, Express, MongoDB, an
   - Fully responsive and interactive.
   - Loading states and robust error handling.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Backend**: Node.js, Express, MongoDB, Mongoose, JSON Web Token, Nodemailer, BcryptJS.
 - **Frontend**: React (Vite), Axios, React Router, Lucide Icons.
 - **Design**: Vanilla CSS with custom design tokens.
 
-## 📦 Getting Started
+##  Getting Started
 
 ### 1. Prerequisites
 - Node.js installed.
@@ -75,7 +75,7 @@ A full-stack flight booking application built with Node.js, Express, MongoDB, an
    npm run dev
    ```
 
-## 🧪 API Testing (Postman)
+##  API Testing (Postman)
 
 A suggested order for testing endpoints:
 1. **Auth**: `POST /api/auth/register` (Receive code in Mailtrap).
@@ -85,7 +85,7 @@ A suggested order for testing endpoints:
 5. **Search**: `GET /api/flights/search?from=City` (Test filters).
 6. **Book**: `POST /api/bookings` (Headers: Authorization Bearer [token]).
 
-## 📝 Assignment Requirements Covered
+##  Assignment Requirements Covered
 
 - [x] RESTful API design.
 - [x] JWT-based authentication.
