@@ -12,9 +12,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Request logger for debugging serverless
+// Request logger
 app.use((req, res, next) => {
-    console.log(`${req.method} ${req.path}`);
+    console.log(`Path: ${req.path}`);
     next();
 });
 
@@ -23,16 +23,15 @@ const authRoutes = require('./routes/authRoutes');
 const flightRoutes = require('./routes/flightRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 
-// Helper to apply routes with and without /api prefix
-const applyRoutes = (prefix) => {
-    app.use(`${prefix}/auth`, authRoutes);
-    app.use(`${prefix}/flights`, flightRoutes);
-    app.use(`${prefix}/bookings`, bookingRoutes);
-};
+// Mount routes at / (Serverless will handle the prefix)
+app.use('/auth', authRoutes);
+app.use('/flights', flightRoutes);
+app.use('/bookings', bookingRoutes);
 
-// Handle both Netlify (/flights) and Local/Traditional (/api/flights)
-applyRoutes('/api');
-applyRoutes(''); // Fallback for serverless where /api might be stripped
+// Test routes for /api prefix just in case
+app.use('/api/auth', authRoutes);
+app.use('/api/flights', flightRoutes);
+app.use('/api/bookings', bookingRoutes);
 
 const connectDB = async () => {
     if (mongoose.connection.readyState >= 1) return;
