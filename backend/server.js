@@ -22,12 +22,14 @@ app.use((req, res, next) => {
 const authRoutes = require('./routes/authRoutes');
 const flightRoutes = require('./routes/flightRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
+const seedController = require('./controllers/seedController');
 
 // Helper to mount all routes
 const mountRoutes = (prefix = '') => {
     app.use(`${prefix}/auth`, authRoutes);
     app.use(`${prefix}/flights`, flightRoutes);
     app.use(`${prefix}/bookings`, bookingRoutes);
+    app.get(`${prefix}/seed`, seedController);
     
     // Root & Health check routes
     app.get(`${prefix}/`, (req, res) => res.json({ status: 'success', message: 'Skysail API is live!', path: req.path }));
