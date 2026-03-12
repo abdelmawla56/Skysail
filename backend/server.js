@@ -67,6 +67,15 @@ const path = require('path');
 // Export app for serverless
 module.exports = app;
 
+// Global Error Handler
+app.use((err, req, res, next) => {
+    console.error('SERVER ERROR:', err.message);
+    res.status(err.status || 500).json({
+        message: err.message || 'Internal Server Error',
+        code: err.code || 'UNKNOWN_ERROR'
+    });
+});
+
 // Local server listener
 if (process.env.NODE_ENV !== 'production') {
     const PORT = process.env.PORT || 5000;
