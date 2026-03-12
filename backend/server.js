@@ -23,24 +23,32 @@ const authRoutes = require('./routes/authRoutes');
 const flightRoutes = require('./routes/flightRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 
-// Mount routes at / (Serverless will handle the prefix)
-app.use('/auth', authRoutes);
-app.use('/flights', flightRoutes);
-app.use('/bookings', bookingRoutes);
+// Helper to mount all routes
+const mountRoutes = (prefix = '') => {
+    app.use(`${prefix}/auth`, authRoutes);
+    app.use(`${prefix}/flights`, flightRoutes);
+    app.use(`${prefix}/bookings`, bookingRoutes);
+    
+    // Root & Health check routes
+    app.get(`${prefix}/`, (req, res) => res.json({ status: 'success', message: 'Skysail API is live!', path: req.path }));
+    app.get(`${prefix}/api`, (req, res) => res.json({ status: 'success', message: 'Skysail API is live!' }));
+    app.get(`${prefix}/health`, (req, res) => res.json({ status: 'healthy', db: mongoose.connection.readyState }));
+};
 
-// Test routes for /api prefix just in case
-app.use('/api/auth', authRoutes);
-app.use('/api/flights', flightRoutes);
-app.use('/api/bookings', bookingRoutes);
-
-// Root & Health check routes
-app.get('/', (req, res) => res.json({ status: 'success', message: 'Skysail API is live!' }));
-app.get('/health', (req, res) => res.json({ status: 'healthy', db: mongoose.connection.readyState }));
-app.get('/api', (req, res) => res.json({ status: 'success', message: 'Skysail API is live!' }));
-app.get('/api/health', (req, res) => res.json({ status: 'healthy', db: mongoose.connection.readyState }));
+// Mount at all possible variations for maximum compatibility
+mountRoutes('');
+mountRoutes('/api');
+mountRoutes('/.netlify/functions/api');
+mountRoutes('/.netlify/functions/api/api');
 
 const connectDB = async () => {
     if (mongoose.connection.readyState >= 1) return;
+    
+    if (!process.env.MONGODB_URI) {
+        console.error('CRITICAL ERROR: MONGODB_URI environment variable is missing!');
+        return;
+    }
+
     try {
         console.log('Connecting to MongoDB...');
         await mongoose.connect(process.env.MONGODB_URI);
