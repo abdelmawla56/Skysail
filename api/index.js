@@ -1,15 +1,18 @@
-const serverless = require('serverless-http');
 const mongoose = require('mongoose');
 const app = require('../backend/server');
 
-const handler = serverless(app);
-
 module.exports = async (req, res) => {
-    // Database connection check
-    if (mongoose.connection.readyState === 0) {
-        await mongoose.connect(process.env.MONGODB_URI);
+    try {
+        if (mongoose.connection.readyState === 0) {
+            console.log('Connecting to MongoDB...');
+            await mongoose.connect(process.env.MONGODB_URI, {
+                serverSelectionTimeoutMS: 5000,
+            });
+        }
+        // Directly handle the request with Express
+        return app(req, res);
+    } catch (err) {
+        console.error('Vercel API Error:', err.message);
+        res.status(500).json({ error: 'Internal Server Error', details: err.message });
     }
-    
-    // Vercel uses standard req/res objects
-    return await handler(req, res);
 };
