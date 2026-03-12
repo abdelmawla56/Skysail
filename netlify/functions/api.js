@@ -5,27 +5,27 @@ const app = require('../../backend/server');
 const handler = serverless(app);
 
 module.exports.handler = async (event, context) => {
-    // Force context to wait for the event loop to be empty
+    // Prevent the function from hanging if there are open connections
     context.callbackWaitsForEmptyEventLoop = false;
 
-    console.log(`[NETLIFY] Incoming Request: ${event.httpMethod} ${event.path}`);
+    // Log the path for debugging
+    console.log(`[NETLIFY] Request: ${event.httpMethod} ${event.path}`);
     
     try {
+        // Ensure Database connection
         if (mongoose.connection.readyState === 0) {
-            console.log('[NETLIFY] Attempting to connect to MongoDB...');
-            if (!process.env.MONGODB_URI) {
-                console.error('[NETLIFY] ERROR: MONGODB_URI is missing from Environment Variables!');
-                return { statusCode: 500, body: JSON.stringify({ message: "Database configuration missing" }) };
-            }
+            console.log('[NETLIFY] Connecting to DB...');
             await mongoose.connect(process.env.MONGODB_URI, {
-                serverSelectionTimeoutMS: 5000
+                serverSelectionTimeoutMS: 5000,
+                socketTimeoutMS: 45000,
             });
-            console.log('[NETLIFY] MongoDB Connected Successfully');
         }
     } catch (err) {
-        console.error('[NETLIFY] MongoDB Connection Failed:', err.message);
-        return { statusCode: 500, body: JSON.stringify({ message: "Database connection failed", error: err.message }) };
+        console.error('[NETLIFY] DB Connection Error:', err.message);
+        // We'll still try to handle the request, but it will likely fail 
+        // with a 500 error from Mongoose if the connection is dead.
     }
 
+    // Pass the request to serverless-http
     return await handler(event, context);
 };

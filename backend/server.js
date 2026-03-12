@@ -33,6 +33,12 @@ app.use('/api/auth', authRoutes);
 app.use('/api/flights', flightRoutes);
 app.use('/api/bookings', bookingRoutes);
 
+// Root & Health check routes
+app.get('/', (req, res) => res.json({ status: 'success', message: 'Skysail API is live!' }));
+app.get('/health', (req, res) => res.json({ status: 'healthy', db: mongoose.connection.readyState }));
+app.get('/api', (req, res) => res.json({ status: 'success', message: 'Skysail API is live!' }));
+app.get('/api/health', (req, res) => res.json({ status: 'healthy', db: mongoose.connection.readyState }));
+
 const connectDB = async () => {
     if (mongoose.connection.readyState >= 1) return;
     try {
