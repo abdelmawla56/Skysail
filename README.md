@@ -41,16 +41,7 @@ A full-stack flight booking application built with Node.js, Express, MongoDB, an
    cd backend
    ```
 2. Create a `.env` file and fill in your credentials:
-   ```env
-   PORT=5000
-   MONGODB_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret
-   MAIL_HOST=sandbox.smtp.mailtrap.io
-   MAIL_PORT=2525
-   MAIL_USER=your_mailtrap_user
-   MAIL_PASS=your_mailtrap_pass
-   MAIL_FROM=no-reply@skysail.com
-   ```
+ 
 3. Install dependencies:
    ```bash
    npm install
